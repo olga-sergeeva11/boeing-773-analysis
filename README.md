@@ -81,15 +81,15 @@
 
 ## Данные
 
-`data/boeing_773_analysis.csv` — итоговая витрина на уровне рейса, использованная для построения дашборда в DataLens.
+[data/boeing_773_analysis.csv](data/boeing_773_analysis.csv) — итоговая витрина на уровне рейса, использованная для построения дашборда в DataLens.
 
 ## SQL
 
-В папке `sql/` находятся основные этапы анализа:
+В папке [sql/](sql/) находятся основные этапы анализа:
 
-- `01_exploration.sql` — первичное исследование данных;
-- `02_boeing_773_analysis.sql` — основной расчёт показателей по рейсам Boeing 773;
-- `03_route_analysis.sql` — анализ показателей на уровне маршрутов.
+- [01_exploration.sql](sql/01_exploration.sql) — первичное исследование данных;
+- [02_boeing_773_analysis.sql](sql/02_boeing_773_analysis.sql) — основной расчёт показателей по рейсам Boeing 773;
+- [03_route_analysis.sql](sql/03_route_analysis.sql) — анализ показателей на уровне маршрутов.
 
 ## Стек
 
