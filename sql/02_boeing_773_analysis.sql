@@ -9,6 +9,12 @@ where f.aircraft_code = '773'
 and f.status = 'Arrived'
 group by 1,2),
 
+-- Вместимость Boeing 773 в данных: 402 места
+-- Economy — 324, Comfort — 48, Business — 30
+	
+-- Для оценки потенциально упущенной выручки используется минимальная
+-- фактическая цена проданного билета соответствующего класса на рейсе.
+-- Такой подход выбран как консервативный, чтобы не завышать оценку.
 lost_revenue_by_class as (select flight_id,
 sum(
 case
@@ -37,7 +43,10 @@ ad2.city->>'ru' as arrival_city,
 f.scheduled_departure as flight_date,
 sum(tf.amount) as actual_revenue,
 count(tf.ticket_no) as passengers_cnt,
+
+-- Загрузка рейса: количество проданных билетов / 402 места
 round(count(tf.ticket_no)/402.0*100,2) as load_pct
+
 from flights as f
 join airports_data ad1
 on f.departure_airport=ad1.airport_code
@@ -57,13 +66,22 @@ lrc.economy_lost,
 lrc.comfort_lost,
 lrc.business_lost,
 fm.actual_revenue,
+
+-- Суммарная оценка потенциально упущенной выручки
+-- по Economy, Comfort и Business на конкретном рейсе.
+-- Если по классу не было продаж, его вклад в денежную оценку равен 0,
+-- так как фактическая цена этого класса на рейсе отсутствует.
 lrc.economy_lost
 + lrc.comfort_lost
 + lrc.business_lost as lost_total,
+
+-- Доля потенциально упущенной выручки
+-- в потенциальной выручке рейса
 round((lrc.economy_lost + lrc.comfort_lost + lrc.business_lost)/
 (fm.actual_revenue + lrc.economy_lost + lrc.comfort_lost + lrc.business_lost)
 * 100,2) as lost_share_pct,
-fm.passengers_cnt,
+
+fm.passengers_cnt,	
 fm.load_pct
 from lost_revenue_by_class lrc
 join flight_metrics fm
